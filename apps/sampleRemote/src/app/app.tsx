@@ -1,9 +1,9 @@
-import NxWelcome from './nx-welcome';
-
 export function App() {
   return (
     <div>
-      <NxWelcome title="sampleRemote" />
+      <button onClick={() => alert('hello from remote')}>
+        remote trigger111
+      </button>
     </div>
   );
 }

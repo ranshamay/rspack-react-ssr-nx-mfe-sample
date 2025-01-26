@@ -1,0 +1,24 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "NX debug server",
+      "type": "node-terminal",
+      "request": "launch",
+      "env": {
+        "NODE_OPTIONS": "--inspect==0.0.0.0:9229"
+      },
+      "command": "${workspaceFolder}/node_modules/nx/bin/nx.js serve mf-host --verbose"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "debug mf-host server",
+      "program": "${workspaceFolder}/dist/apps/mf-host/server/server.js",
+      "console": "integratedTerminal"
+    }
+  ]
+}

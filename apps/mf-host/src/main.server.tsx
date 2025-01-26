@@ -43,6 +43,7 @@ export function handleRequest(indexPath: string) {
           res.send('<!doctype html><h1>Server Error</h1>');
         },
         onError(error) {
+          debugger;
           didError = true;
           console.error(error);
         },

@@ -1,6 +1,7 @@
 import * as React from 'react';
 import NxWelcome from './nx-welcome';
 import { Link, Route, Routes } from 'react-router-dom';
+// @ts-ignore
 const RemoteComponent = React.lazy(() => import('sampleRemote/Module'));
 
 export function App() {
