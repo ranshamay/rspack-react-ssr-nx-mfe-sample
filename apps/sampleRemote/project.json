@@ -1,0 +1,137 @@
+{
+  "name": "sampleRemote",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "apps/sampleRemote/src",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx/rspack:rspack",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "target": "web",
+        "outputPath": "dist/apps/sampleRemote/browser",
+        "index": "apps/sampleRemote/src/index.html",
+        "main": "apps/sampleRemote/src/main.ts",
+        "tsConfig": "apps/sampleRemote/tsconfig.app.json",
+        "rspackConfig": "apps/sampleRemote/rspack.config.ts",
+        "assets": [
+          "apps/sampleRemote/src/favicon.ico",
+          "apps/sampleRemote/src/assets"
+        ]
+      },
+      "configurations": {
+        "development": {
+          "mode": "development"
+        },
+        "production": {
+          "mode": "production",
+          "optimization": true,
+          "sourceMap": false,
+          "rspackConfig": "apps/sampleRemote/rspack.config.prod.ts"
+        }
+      },
+      "dependsOn": ["^build", "typecheck"]
+    },
+    "serve": {
+      "executor": "@nx/rspack:ssr-dev-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "browserTarget": "sampleRemote:build:development",
+        "serverTarget": "sampleRemote:serve-server:development",
+        "port": 4202,
+        "browserTargetOptions": {
+          "watch": true
+        }
+      },
+      "configurations": {
+        "development": {},
+        "production": {
+          "browserTarget": "sampleRemote:build:production",
+          "serverTarget": "sampleRemote:serve-server:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    },
+    "serve-static": {
+      "dependsOn": ["build", "server"],
+      "executor": "nx:run-commands",
+      "defaultConfiguration": "development",
+      "options": {
+        "command": "PORT=4202 node dist/apps/sampleRemote/server/server.js"
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{projectRoot}/test-output/jest/coverage"],
+      "options": {
+        "jestConfig": "apps/sampleRemote/jest.config.ts"
+      }
+    },
+    "server": {
+      "dependsOn": ["build"],
+      "executor": "@nx/rspack:rspack",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "target": "node",
+        "main": "apps/sampleRemote/server.ts",
+        "outputPath": "dist/apps/sampleRemote/server",
+        "outputFileName": "server.js",
+        "tsConfig": "apps/sampleRemote/tsconfig.server.json",
+        "compiler": "babel",
+        "externalDependencies": "all",
+        "outputHashing": "none",
+        "rspackConfig": "apps/sampleRemote/rspack.server.config.ts"
+      },
+      "configurations": {
+        "development": {
+          "optimization": false,
+          "sourceMap": true
+        },
+        "production": {
+          "fileReplacements": [
+            {
+              "replace": "apps/sampleRemote/src/environments/environment.ts",
+              "with": "apps/sampleRemote/src/environments/environment.prod.ts"
+            }
+          ],
+          "sourceMap": false
+        }
+      }
+    },
+    "serve-browser": {
+      "executor": "@nx/rspack:module-federation-dev-server",
+      "options": {
+        "buildTarget": "sampleRemote:build:development",
+        "port": 4201
+      },
+      "configurations": {
+        "development": {},
+        "production": {
+          "buildTarget": "sampleRemote:build:production"
+        }
+      },
+      "dependsOn": ["typecheck"]
+    },
+    "serve-server": {
+      "executor": "@nx/js:node",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "sampleRemote:server:development",
+        "buildTargetOptions": {
+          "watch": true
+        }
+      },
+      "configurations": {
+        "development": {},
+        "production": {
+          "buildTarget": "sampleRemote:server:production"
+        }
+      }
+    }
+  }
+}

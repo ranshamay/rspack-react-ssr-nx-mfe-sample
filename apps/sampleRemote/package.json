@@ -1,0 +1,10 @@
+{
+  "name": "@rspack-react-ssr-nx-mfe-sample/sample-remote",
+  "version": "0.0.1",
+  "private": true,
+  "nx": {
+    "name": "sample-remote",
+    "projectType": "application",
+    "sourceRoot": "apps/sampleRemote/src"
+  }
+}

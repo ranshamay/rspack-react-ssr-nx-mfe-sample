@@ -1,0 +1,141 @@
+{
+  "name": "mf-host",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "apps/mf-host/src",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx/rspack:rspack",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "target": "web",
+        "outputPath": "dist/apps/mf-host/browser",
+        "index": "apps/mf-host/src/index.html",
+        "main": "apps/mf-host/src/main.ts",
+        "tsConfig": "apps/mf-host/tsconfig.app.json",
+        "rspackConfig": "apps/mf-host/rspack.config.ts",
+        "assets": ["apps/mf-host/src/favicon.ico", "apps/mf-host/src/assets"]
+      },
+      "configurations": {
+        "development": {
+          "mode": "development"
+        },
+        "production": {
+          "mode": "production",
+          "optimization": true,
+          "sourceMap": false,
+          "rspackConfig": "apps/mf-host/rspack.config.prod.ts"
+        }
+      },
+      "dependsOn": ["^build", "typecheck"]
+    },
+    "serve": {
+      "executor": "@nx/rspack:module-federation-ssr-dev-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "browserTarget": "mf-host:build:development",
+        "serverTarget": "mf-host:serve-server:development",
+        "port": 4200,
+        "browserTargetOptions": {
+          "watch": true
+        }
+      },
+      "configurations": {
+        "development": {},
+        "production": {
+          "browserTarget": "mf-host:build:production",
+          "serverTarget": "mf-host:serve-server:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    },
+    "serve-static": {
+      "executor": "@nx/rspack:module-federation-static-server",
+      "defaultConfiguration": "production",
+      "options": {
+        "serveTarget": "mf-host:serve"
+      },
+      "configurations": {
+        "development": {
+          "serveTarget": "mf-host:serve:development"
+        },
+        "production": {
+          "serveTarget": "mf-host:serve:production"
+        }
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{projectRoot}/test-output/jest/coverage"],
+      "options": {
+        "jestConfig": "apps/mf-host/jest.config.ts"
+      }
+    },
+    "server": {
+      "dependsOn": ["build"],
+      "executor": "@nx/rspack:rspack",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "target": "node",
+        "main": "apps/mf-host/server.ts",
+        "outputPath": "dist/apps/mf-host/server",
+        "outputFileName": "server.js",
+        "tsConfig": "apps/mf-host/tsconfig.server.json",
+        "compiler": "babel",
+        "externalDependencies": "all",
+        "outputHashing": "none",
+        "rspackConfig": "apps/mf-host/rspack.server.config.ts"
+      },
+      "configurations": {
+        "development": {
+          "optimization": false,
+          "sourceMap": true
+        },
+        "production": {
+          "fileReplacements": [
+            {
+              "replace": "apps/mf-host/src/environments/environment.ts",
+              "with": "apps/mf-host/src/environments/environment.prod.ts"
+            }
+          ],
+          "sourceMap": false
+        }
+      }
+    },
+    "serve-browser": {
+      "executor": "@nx/rspack:module-federation-dev-server",
+      "options": {
+        "buildTarget": "mf-host:build:development",
+        "port": 4200
+      },
+      "configurations": {
+        "development": {},
+        "production": {
+          "buildTarget": "mf-host:build:production"
+        }
+      },
+      "dependsOn": ["typecheck"]
+    },
+    "serve-server": {
+      "executor": "@nx/js:node",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "mf-host:server:development",
+        "buildTargetOptions": {
+          "watch": true
+        }
+      },
+      "configurations": {
+        "development": {},
+        "production": {
+          "buildTarget": "mf-host:server:production"
+        }
+      }
+    }
+  }
+}

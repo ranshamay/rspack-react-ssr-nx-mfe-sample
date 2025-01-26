@@ -1,0 +1,10 @@
+{
+  "name": "@rspack-react-ssr-nx-mfe-sample/mf-host",
+  "version": "0.0.1",
+  "private": true,
+  "nx": {
+    "name": "mf-host",
+    "projectType": "application",
+    "sourceRoot": "apps/mf-host/src"
+  }
+}
